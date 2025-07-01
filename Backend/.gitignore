@@ -1,0 +1,37 @@
+# 디폴트 무시된 파일
+/shelf/
+/.idea/workspace.xml
+# 에디터 기반 HTTP 클라이언트 요청
+/httpRequests/
+# 환경에 따라 달라지는 Maven 홈 디렉터리
+/mavenHomeManager.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Build
+build/
+out/
+
+# Gradle
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
