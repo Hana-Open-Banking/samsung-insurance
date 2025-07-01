@@ -2,11 +2,16 @@ package com.insurance.samsung.backend.controller;
 
 import com.insurance.samsung.backend.entity.OAuthClient;
 import com.insurance.samsung.backend.entity.OAuthToken;
+import com.insurance.samsung.backend.repository.OAuthClientRepository;
+import com.insurance.samsung.backend.repository.OAuthTokenRepository;
 import com.insurance.samsung.backend.service.OAuthService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,13 +25,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OAuthController.class)
+@Import(OAuthControllerTest.TestConfig.class)
 public class OAuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private OAuthService oauthService;
+
+    @Configuration
+    static class TestConfig {
+        @Bean
+        public OAuthService oauthService() {
+            return Mockito.mock(OAuthService.class);
+        }
+
+        @Bean
+        public OAuthClientRepository oauthClientRepository() {
+            return Mockito.mock(OAuthClientRepository.class);
+        }
+
+        @Bean
+        public OAuthTokenRepository oauthTokenRepository() {
+            return Mockito.mock(OAuthTokenRepository.class);
+        }
+    }
 
     @Test
     public void testTokenEndpointWithValidAuthorization() throws Exception {
