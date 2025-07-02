@@ -82,6 +82,31 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        // Validate token
+        String token = extractToken(authHeader);
+        if (token == null) {
+            return createErrorResponse("INVALID_TOKEN", "액세스 토큰이 없습니다", HttpStatus.UNAUTHORIZED);
+        }
+
+        // Get user by token
+        Optional<User> userOpt = oauthService.getUserByToken(token);
+
+        if (userOpt.isEmpty()) {
+            // Check if token is valid but no user is associated
+            if (oauthService.validateToken(token).isPresent()) {
+                return createErrorResponse("USER_NOT_FOUND", "토큰에 연결된 사용자가 없습니다", HttpStatus.NOT_FOUND);
+            }
+            // Token is invalid
+            return createErrorResponse("INVALID_TOKEN", "액세스 토큰이 유효하지 않습니다", HttpStatus.UNAUTHORIZED);
+        }
+
+        return ResponseEntity.ok(convertToDto(userOpt.get()));
+    }
+
     @PostMapping
     public ResponseEntity<?> registerUser(
             @RequestBody UserDto userDto,

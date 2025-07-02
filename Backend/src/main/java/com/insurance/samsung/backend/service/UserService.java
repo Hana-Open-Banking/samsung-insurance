@@ -34,6 +34,22 @@ public class UserService {
         return userRepository.findById(userSeqNo);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> authenticateUser(String userEmail, String password) {
+        Optional<User> userOpt = userRepository.findByUserEmail(userEmail);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String encodedPassword = encodePassword(password);
+
+            if (encodedPassword.equals(user.getPassword())) {
+                return Optional.of(user);
+            }
+        }
+
+        return Optional.empty();
+    }
+
     @Transactional
     public User registerUser(User user) {
         if (userRepository.existsByUserCi(user.getUserCi())) {
@@ -57,6 +73,8 @@ public class UserService {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            System.out.println("이 값 넣기");
+            System.out.println(Base64.getEncoder().encodeToString(hash));
             return Base64.getEncoder().encodeToString(hash);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error encoding password", e);
