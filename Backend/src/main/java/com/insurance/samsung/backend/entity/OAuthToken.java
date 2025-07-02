@@ -24,6 +24,10 @@ public class OAuthToken {
     @JoinColumn(name = "client_id", nullable = false)
     private OAuthClient client;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_seq_no")
+    private User user;
+
     @Column(name = "expires_in", nullable = false)
     private Integer expiresIn;
 
