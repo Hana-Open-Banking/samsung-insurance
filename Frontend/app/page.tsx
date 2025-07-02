@@ -1,40 +1,52 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { ChevronLeft, ChevronRight, Pause } from "lucide-react"
-import Image from "next/image"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight, Pause } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { loginAndGetUser } from "@/lib/api";
 
 interface User {
-  name: string
-  isLoggedIn: boolean
+  name: string;
+  isLoggedIn: boolean;
 }
 
 export default function HomePage() {
-  const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 로그인 상태 확인
-    const userData = localStorage.getItem("user")
-    if (userData) {
-      setUser(JSON.parse(userData))
+    // sessionStorage에서 사용자 정보만 확인 (자동 로그인 X)
+    const storedUser = sessionStorage.getItem("user");
+    console.log("🏠 홈 페이지 - sessionStorage에서 읽은 데이터:", storedUser);
+
+    if (storedUser && storedUser !== "undefined") {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        console.log("🏠 홈 페이지 - 파싱된 사용자 데이터:", parsedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("sessionStorage 데이터 파싱 오류:", error);
+        sessionStorage.removeItem("user"); // 잘못된 데이터 제거
+      }
     }
-  }, [])
+    setLoading(false);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    setUser(null)
+    sessionStorage.removeItem("user");
+    setUser(null);
     // 페이지 새로고침으로 헤더도 업데이트
-    window.location.reload()
-  }
+    window.location.reload();
+  };
 
   const handleMyPage = () => {
     // 마이페이지로 이동
-    router.push("/mypage")
-  }
+    router.push("/mypage");
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -47,7 +59,9 @@ export default function HomePage() {
             <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-8 mb-8 relative overflow-hidden">
               <div className="flex items-center justify-between">
                 <div className="z-10">
-                  <div className="text-orange-600 text-sm font-medium mb-2">교통안전송 챌린지</div>
+                  <div className="text-orange-600 text-sm font-medium mb-2">
+                    교통안전송 챌린지
+                  </div>
                   <h2 className="text-3xl font-bold text-gray-800 mb-2 leading-tight">
                     카르르 챌린지 참여 시<br />
                     네이버페이 1만원
@@ -82,7 +96,9 @@ export default function HomePage() {
 
             {/* Insurance Products Section */}
             <div className="mb-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-6">많은 분들이 선택한 상품이에요</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">
+                많은 분들이 선택한 상품이에요
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                   <CardContent className="p-6">
@@ -97,9 +113,15 @@ export default function HomePage() {
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-bold text-gray-800 mb-2">다이렉트 해외여행보험</h4>
-                        <p className="text-gray-600 text-sm mb-1 leading-tight">안전한</p>
-                        <p className="text-gray-600 text-sm leading-tight">나의 여행을 위해</p>
+                        <h4 className="font-bold text-gray-800 mb-2">
+                          다이렉트 해외여행보험
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-1 leading-tight">
+                          안전한
+                        </p>
+                        <p className="text-gray-600 text-sm leading-tight">
+                          나의 여행을 위해
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -118,9 +140,15 @@ export default function HomePage() {
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-bold text-gray-800 mb-2">다이렉트 자동차보험</h4>
-                        <p className="text-gray-600 text-sm mb-1 leading-tight">다이렉트로 자동차</p>
-                        <p className="text-gray-600 text-sm leading-tight">보험서비스는 그대로!</p>
+                        <h4 className="font-bold text-gray-800 mb-2">
+                          다이렉트 자동차보험
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-1 leading-tight">
+                          다이렉트로 자동차
+                        </p>
+                        <p className="text-gray-600 text-sm leading-tight">
+                          보험서비스는 그대로!
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -141,7 +169,9 @@ export default function HomePage() {
                   />
                 </div>
                 <div className="flex items-center space-x-2">
-                  <h4 className="font-bold text-gray-800">보험상품 한눈에 보기</h4>
+                  <h4 className="font-bold text-gray-800">
+                    보험상품 한눈에 보기
+                  </h4>
                   <ChevronRight className="w-5 h-5 text-gray-600" />
                 </div>
               </div>
@@ -157,7 +187,9 @@ export default function HomePage() {
                   // 로그인된 상태
                   <>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-gray-800 font-bold">{user.name}님, 환영합니다!</span>
+                      <span className="text-gray-800 font-bold">
+                        {user.name}님, 환영합니다!
+                      </span>
                     </div>
                     <Button
                       onClick={handleMyPage}
@@ -175,11 +207,23 @@ export default function HomePage() {
                       </button>
                     </div>
                   </>
+                ) : loading ? (
+                  // 로딩 상태
+                  <>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-gray-600 font-bold">
+                        로그인 중...
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 h-10 rounded animate-pulse"></div>
+                  </>
                 ) : (
                   // 로그인되지 않은 상태
                   <>
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-gray-600 font-bold">안녕하세요!</span>
+                      <span className="text-gray-600 font-bold">
+                        안녕하세요!
+                      </span>
                     </div>
                     <a href="/login">
                       <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4 cursor-pointer">
@@ -187,16 +231,28 @@ export default function HomePage() {
                       </Button>
                     </a>
                     <div className="flex justify-between text-sm text-gray-600">
-                      <span className="cursor-pointer hover:text-blue-600 transition-colors">회원 가입</span>
-                      <span className="cursor-pointer hover:text-blue-600 transition-colors">아이디/비밀번호 찾기</span>
+                      <span className="cursor-pointer hover:text-blue-600 transition-colors">
+                        회원 가입
+                      </span>
+                      <span className="cursor-pointer hover:text-blue-600 transition-colors">
+                        아이디/비밀번호 찾기
+                      </span>
                     </div>
                   </>
                 )}
 
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 mb-2">삼성화재 카르르 챌린지</p>
-                  <p className="text-sm text-gray-600 mb-3 leading-tight">참여만 해도 네이버페이 1만원을 드려요!</p>
-                  <Button variant="outline" size="sm" className="w-full bg-transparent cursor-pointer">
+                  <p className="text-sm text-gray-600 mb-2">
+                    삼성화재 카르르 챌린지
+                  </p>
+                  <p className="text-sm text-gray-600 mb-3 leading-tight">
+                    참여만 해도 네이버페이 1만원을 드려요!
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full bg-transparent cursor-pointer"
+                  >
                     자세히보기
                   </Button>
                 </div>
@@ -359,5 +415,5 @@ export default function HomePage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
