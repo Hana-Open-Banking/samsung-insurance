@@ -28,3 +28,77 @@ INSERT INTO payment_info (payment_id, insu_id, pay_due, pay_cycle, pay_date, pay
 INSERT INTO api_transaction_log (api_tran_id, api_tran_dtm, rsp_code, rsp_message, bank_tran_id, bank_tran_date, bank_code_tran, bank_rsp_code, bank_rsp_message, user_seq_no, insu_id) VALUES
 ('API20240001000000000001', '20240101120000000', '00000', '정상처리 되었습니다', 'BANK20240001000001', '20240101', '001', '000', '정상', '1000000001', 'INSU20240001'),
 ('API20240001000000000002', '20240102130000000', '00000', '정상처리 되었습니다', 'BANK20240001000002', '20240102', '002', '000', '정상', '1000000002', 'INSU20240002');
+
+-- INSU20240001 (홍길동, 월 12만원 보험료)에 대한 납입 정보
+INSERT INTO payment_info (
+    payment_id,
+    insu_id,
+    pay_amt,
+    pay_cycle,
+    pay_date,
+    pay_due,
+    pay_end_date,
+    pay_org_code,
+    pay_account_num,
+    pay_account_num_masked,
+    created_at,
+    updated_at
+) VALUES (
+             'PAY20240001',           -- payment_id: 납입정보 고유ID
+             'INSU20240001',          -- insu_id: 보험계약 ID
+             120000,                  -- pay_amt: 납입금액 (월 12만원)
+             '01',                    -- pay_cycle: 납입주기 (01:월납, 02:연납, 03:일시납)
+             '25',                    -- pay_date: 납입일 (매월 25일)
+             '05',                    -- pay_due: 납입유예일 (5일)
+             '20340101',              -- pay_end_date: 납입종료일 (보험만료일과 동일)
+             '449',                   -- pay_org_code: 납입기관코드 (은행코드)
+             '1234567890123456',      -- pay_account_num: 납입계좌번호
+             '1234**********3456',    -- pay_account_num_masked: 마스킹된 계좌번호
+             NOW(),                   -- created_at: 생성일시
+             NOW()                    -- updated_at: 수정일시
+         );
+
+-- INSU20240002 (김영희, 월 20만원 보험료)에 대한 납입 정보
+INSERT INTO payment_info (
+    payment_id,
+    insu_id,
+    pay_amt,
+    pay_cycle,
+    pay_date,
+    pay_due,
+    pay_end_date,
+    pay_org_code,
+    pay_account_num,
+    pay_account_num_masked,
+    created_at,
+    updated_at
+) VALUES (
+             'PAY20240002',           -- payment_id: 납입정보 고유ID
+             'INSU20240002',          -- insu_id: 보험계약 ID
+             200000,                  -- pay_amt: 납입금액 (월 20만원)
+             '01',                    -- pay_cycle: 납입주기 (01:월납)
+             '15',                    -- pay_date: 납입일 (매월 15일)
+             '03',                    -- pay_due: 납입유예일 (3일)
+             '20340201',              -- pay_end_date: 납입종료일 (보험만료일과 동일)
+             '449',                   -- pay_org_code: 납입기관코드 (은행코드)
+             '9876543210987654',      -- pay_account_num: 납입계좌번호
+             '9876**********7654',    -- pay_account_num_masked: 마스킹된 계좌번호
+             NOW(),                   -- created_at: 생성일시
+             NOW()                    -- updated_at: 수정일시
+         );
+
+-- 데이터 확인 쿼리
+SELECT
+    pi.payment_id,
+    pi.insu_id,
+    ic.insu_num,
+    pi.pay_amt,
+    pi.pay_cycle,
+    pi.pay_date,
+    pi.pay_due,
+    pi.pay_end_date,
+    pi.pay_org_code,
+    pi.pay_account_num_masked
+FROM payment_info pi
+         JOIN insurance_contract ic ON pi.insu_id = ic.insu_id
+ORDER BY pi.payment_id;
