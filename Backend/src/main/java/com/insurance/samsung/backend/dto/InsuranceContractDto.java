@@ -27,4 +27,5 @@ public class InsuranceContractDto {
     private Long paidPremium;
     private String specialYn;
     private LocalDateTime createdAt;
+    private PaymentInfoDto paymentInfo;
 }

@@ -1,11 +1,14 @@
 package com.insurance.samsung.backend.controller;
 
 import com.insurance.samsung.backend.dto.InsuranceContractDto;
+import com.insurance.samsung.backend.dto.PaymentInfoDto;
 import com.insurance.samsung.backend.entity.InsuranceContract;
 import com.insurance.samsung.backend.entity.OAuthToken;
+import com.insurance.samsung.backend.entity.PaymentInfo;
 import com.insurance.samsung.backend.entity.User;
 import com.insurance.samsung.backend.service.InsuranceContractService;
 import com.insurance.samsung.backend.service.OAuthService;
+import com.insurance.samsung.backend.service.PaymentInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +26,13 @@ public class InsuranceContractController {
 
     private final InsuranceContractService contractService;
     private final OAuthService oauthService;
+    private final PaymentInfoService paymentInfoService;
 
     @Autowired
-    public InsuranceContractController(InsuranceContractService contractService, OAuthService oauthService) {
+    public InsuranceContractController(InsuranceContractService contractService, OAuthService oauthService, PaymentInfoService paymentInfoService) {
         this.contractService = contractService;
         this.oauthService = oauthService;
+        this.paymentInfoService = paymentInfoService;
     }
 
     private ResponseEntity<Map<String, Object>> createErrorResponse(String error, String description, HttpStatus status) {
@@ -107,7 +112,11 @@ public class InsuranceContractController {
     }
 
     private InsuranceContractDto convertToDto(InsuranceContract contract) {
-        return InsuranceContractDto.builder()
+        // Get payment info for this contract
+        Optional<PaymentInfo> paymentInfoOpt = paymentInfoService.getPaymentInfoByContractId(contract.getInsuId());
+
+        // Create contract DTO
+        InsuranceContractDto contractDto = InsuranceContractDto.builder()
                 .insuId(contract.getInsuId())
                 .insuNum(contract.getInsuNum())
                 .userSeqNo(contract.getUser().getUserSeqNo())
@@ -122,5 +131,28 @@ public class InsuranceContractController {
                 .specialYn(String.valueOf(contract.getSpecialYn()))
                 .createdAt(contract.getCreatedAt())
                 .build();
+
+        // Add payment info if available
+        if (paymentInfoOpt.isPresent()) {
+            PaymentInfo paymentInfo = paymentInfoOpt.get();
+            PaymentInfoDto paymentInfoDto = PaymentInfoDto.builder()
+                    .paymentId(paymentInfo.getPaymentId())
+                    .insuId(contract.getInsuId())
+                    .payDue(new String(paymentInfo.getPayDue()))
+                    .payCycle(new String(paymentInfo.getPayCycle()))
+                    .payDate(new String(paymentInfo.getPayDate()))
+                    .payEndDate(new String(paymentInfo.getPayEndDate()))
+                    .payAmt(paymentInfo.getPayAmt())
+                    .payOrgCode(new String(paymentInfo.getPayOrgCode()))
+                    .payAccountNum(paymentInfo.getPayAccountNum())
+                    .payAccountNumMasked(paymentInfo.getPayAccountNumMasked())
+                    .createdAt(paymentInfo.getCreatedAt())
+                    .updatedAt(paymentInfo.getUpdatedAt())
+                    .build();
+
+            contractDto.setPaymentInfo(paymentInfoDto);
+        }
+
+        return contractDto;
     }
 }
