@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -139,10 +139,10 @@ public class UserController {
         return UserDto.builder()
                 .userSeqNo(user.getUserSeqNo())
                 .userName(user.getUserName())
-                .gender(user.getGender())
+                .gender(String.valueOf(user.getGender()))
                 .phoneNumber(user.getPhoneNumber())
                 .userEmail(user.getUserEmail())
-                .userInfo(user.getUserInfo())
+                .userInfo(new String(user.getUserInfo()))
                 .createdAt(user.getCreatedAt())
                 .build();
     }
@@ -152,11 +152,11 @@ public class UserController {
                 .userCi(userDto.getUserCi())
                 .userName(userDto.getUserName())
                 .userRegNum(userDto.getUserRegNum())
-                .gender(userDto.getGender())
+                .gender(userDto.getGender().charAt(0))
                 .password(userDto.getPassword())
                 .phoneNumber(userDto.getPhoneNumber())
                 .userEmail(userDto.getUserEmail())
-                .userInfo(userDto.getUserInfo())
+                .userInfo(userDto.getUserInfo().toCharArray())
                 .build();
     }
 }
