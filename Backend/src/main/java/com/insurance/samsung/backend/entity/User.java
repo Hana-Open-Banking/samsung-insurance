@@ -31,8 +31,8 @@ public class User {
     @Column(name = "user_reg_num", length = 13, nullable = false)
     private String userRegNum;
 
-    @Column(name = "gender", length = 6, nullable = false)
-    private String gender;
+    @Column(name = "gender", length = 1, nullable = false)
+    private char gender;
 
     @Column(name = "password", length = 100, nullable = false)
     private String password;
@@ -44,7 +44,7 @@ public class User {
     private String userEmail;
 
     @Column(name = "user_info", length = 8, nullable = false)
-    private String userInfo;
+    private char[] userInfo;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

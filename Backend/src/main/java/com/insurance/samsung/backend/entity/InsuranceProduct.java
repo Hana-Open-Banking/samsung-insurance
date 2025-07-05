@@ -19,10 +19,10 @@ public class InsuranceProduct {
     private String productId;
 
     @Column(name = "product_type", length = 2, nullable = false)
-    private String productType;
+    private char[] productType;
 
-    @Column(name = "product_name", length = 100, nullable = false)
-    private String productName;
+    @Column(name = "prod_name", length = 100, nullable = false)
+    private String prodName;
 
     @Column(name = "total_premium", nullable = false)
     private Long totalPremium;
