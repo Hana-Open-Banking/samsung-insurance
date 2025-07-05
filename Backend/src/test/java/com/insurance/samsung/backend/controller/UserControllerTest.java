@@ -60,10 +60,10 @@ public class UserControllerTest {
         User user = User.builder()
                 .userSeqNo("1000000001")
                 .userName("홍길동")
-                .gender("M")
+                .gender('M')
                 .phoneNumber("010-1234-5678")
                 .userEmail("hong@test.com")
-                .userInfo("19900101")
+                .userInfo("19900101".toCharArray())
                 .createdAt(LocalDateTime.now())
                 .build();
 

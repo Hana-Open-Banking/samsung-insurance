@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface InsuranceProductRepository extends JpaRepository<InsuranceProduct, String> {
-    
-    List<InsuranceProduct> findByProductType(String productType);
+
+    List<InsuranceProduct> findByProductType(char[] productType);
 }

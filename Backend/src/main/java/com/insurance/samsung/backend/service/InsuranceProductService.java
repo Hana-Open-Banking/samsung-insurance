@@ -31,6 +31,50 @@ public class InsuranceProductService {
 
     @Transactional(readOnly = true)
     public List<InsuranceProduct> getProductsByType(String productType) {
-        return productRepository.findByProductType(productType);
+        if (productType == null || productType.length() != 2) {
+            throw new IllegalArgumentException("Product type must be 2 characters");
+        }
+        // Convert String to char[] for query
+        char[] typeChars = productType.toCharArray();
+        return productRepository.findByProductType(typeChars);
+    }
+
+    @Transactional
+    public InsuranceProduct createProduct(InsuranceProduct product) {
+        // Validate product type (2 characters)
+        if (product.getProductType() == null || product.getProductType().length != 2) {
+            throw new IllegalArgumentException("Product type must be 2 characters");
+        }
+
+        // Validate product name
+        if (product.getProdName() == null || product.getProdName().isEmpty()) {
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
+
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public InsuranceProduct updateProduct(String productId, InsuranceProduct updatedProduct) {
+        InsuranceProduct existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
+
+        // Update fields
+        if (updatedProduct.getProductType() != null) {
+            if (updatedProduct.getProductType().length != 2) {
+                throw new IllegalArgumentException("Product type must be 2 characters");
+            }
+            existingProduct.setProductType(updatedProduct.getProductType());
+        }
+
+        if (updatedProduct.getProdName() != null && !updatedProduct.getProdName().isEmpty()) {
+            existingProduct.setProdName(updatedProduct.getProdName());
+        }
+
+        if (updatedProduct.getTotalPremium() != null) {
+            existingProduct.setTotalPremium(updatedProduct.getTotalPremium());
+        }
+
+        return productRepository.save(existingProduct);
     }
 }

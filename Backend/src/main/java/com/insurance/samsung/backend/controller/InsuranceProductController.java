@@ -53,8 +53,8 @@ public class InsuranceProductController {
     private InsuranceProductDto convertToDto(InsuranceProduct product) {
         return InsuranceProductDto.builder()
                 .productId(product.getProductId())
-                .productType(product.getProductType())
-                .productName(product.getProductName())
+                .productType(new String(product.getProductType()))
+                .productName(product.getProdName())
                 .totalPremium(product.getTotalPremium())
                 .build();
     }

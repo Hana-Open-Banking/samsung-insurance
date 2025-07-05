@@ -35,14 +35,16 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequest) {
         // Authenticate user
         System.out.println("login request email: " + loginRequest.getUserEmail());
-        System.out.println("login request email: " + loginRequest.getPassword());
+        System.out.println("login request password: " + loginRequest.getPassword());
         Optional<User> userOpt = userService.authenticateUser(loginRequest.getUserEmail(), loginRequest.getPassword());
+        System.out.println("userOpt: " + userOpt);
 
         if (userOpt.isEmpty()) {
             return createErrorResponse("INVALID_CREDENTIALS", "Invalid user ID or password", HttpStatus.UNAUTHORIZED);
         }
 
         User user = userOpt.get();
+        System.out.println("User authenticated successfully with user_seq_no: " + user.getUserSeqNo());
 
         // Issue token for user
         Optional<OAuthToken> tokenOpt = oauthService.issueTokenForUser("CLIENT001", "secret123", "read", user);

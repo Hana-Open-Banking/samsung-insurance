@@ -25,6 +25,9 @@ public class InsuranceContract {
     @Column(name = "insu_num", length = 20, nullable = false)
     private String insuNum;
 
+    @Column(name = "insu_num_masked", length = 20, nullable = false)
+    private String insuNumMasked;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq_no", nullable = false)
     private User user;
@@ -34,10 +37,10 @@ public class InsuranceContract {
     private InsuranceProduct product;
 
     @Column(name = "insu_type", length = 2, nullable = false)
-    private String insuType;
+    private char[] insuType;
 
     @Column(name = "insu_status", length = 2, nullable = false)
-    private String insuStatus;
+    private char[] insuStatus;
 
     @Column(name = "issue_date", length = 8, nullable = false)
     private String issueDate;
@@ -52,7 +55,7 @@ public class InsuranceContract {
     private Long paidPremium;
 
     @Column(name = "special_yn", length = 1, nullable = false)
-    private String specialYn;
+    private char specialYn;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

@@ -36,11 +36,15 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Optional<User> authenticateUser(String userEmail, String password) {
-        Optional<User> userOpt = userRepository.findByUserEmail(userEmail);
+        Optional<User> userOpt = userRepository.findByUserEmailIgnoreCase(userEmail);
 
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             String encodedPassword = encodePassword(password);
+            System.out.println("=======");
+            System.out.println(encodedPassword);
+            System.out.println(user.getPassword());
+            System.out.println("=======");
 
             if (encodedPassword.equals(user.getPassword())) {
                 return Optional.of(user);
@@ -62,6 +66,16 @@ public class UserService {
 
         // Encrypt the password
         user.setPassword(encodePassword(user.getPassword()));
+
+        // Ensure gender is properly set as a char
+        if (user.getGender() == '\0' && user.getGender() != 'M' && user.getGender() != 'F') {
+            throw new IllegalArgumentException("Gender must be 'M' or 'F'");
+        }
+
+        // Ensure userInfo is properly set as a char array (8 characters for YYYYMMDD)
+        if (user.getUserInfo() == null || user.getUserInfo().length != 8) {
+            throw new IllegalArgumentException("User info must be 8 characters in YYYYMMDD format");
+        }
 
         // Set creation timestamp
         user.setCreatedAt(LocalDateTime.now());

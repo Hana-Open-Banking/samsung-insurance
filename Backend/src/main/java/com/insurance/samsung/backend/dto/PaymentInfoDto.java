@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,19 +14,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class InsuranceContractDto {
+public class PaymentInfoDto {
+    private String paymentId;
     private String insuId;
     private String insuNum;
-    private String userSeqNo;
-    private String productId;
-    private String productName;
-    private String insuType;
-    private String insuStatus;
-    private String issueDate;
-    private String expDate;
-    private Long premium;
-    private Long paidPremium;
-    private String specialYn;
+    private String insuNumMasked;
+    private String payDue;
+    private String payCycle;
+    private String payDate;
+    private String payEndDate;
+    private BigDecimal payAmt;
+    private String payOrgCode;
+    private String payAccountNum;
+    private String payAccountNumMasked;
     private LocalDateTime createdAt;
-    private PaymentInfoDto paymentInfo;
+    private LocalDateTime updatedAt;
 }
