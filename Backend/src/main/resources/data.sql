@@ -1,3 +1,11 @@
+-- 기존 데이터 삭제 (외래키 제약조건 때문에 순서 중요)
+DELETE FROM api_transaction_log;
+DELETE FROM payment_info;
+DELETE FROM insurance_contract;
+DELETE FROM user;
+DELETE FROM oauth_client;
+DELETE FROM insurance_product;
+
 -- Insurance Product initial data
 INSERT INTO insurance_product (product_id, product_type, prod_name, total_premium) VALUES
 ('PROD001', '01', '실손의료비보험', 1440000),
@@ -18,11 +26,6 @@ INSERT INTO user (user_seq_no, user_ci, user_name, user_reg_num, gender, passwor
 INSERT INTO insurance_contract (insu_id, insu_num, insu_num_masked, user_seq_no, product_id, insu_type, insu_status, issue_date, exp_date, premium, paid_premium, special_yn, created_at) VALUES
 ('INSU20240001', '12345678901234567890', '123**************890', '1000000001', 'PROD001', '01', '01', '20240101', '20340101', 120000, 1200000, 'Y', NOW()),
 ('INSU20240002', '09876543210987654321', '098**************321', '1000000002', 'PROD002', '02', '01', '20240201', '20340201', 200000, 400000, 'N', NOW());
-
--- Payment Info sample data
-INSERT INTO payment_info (payment_id, insu_id, pay_due, pay_cycle, pay_date, pay_end_date, pay_amt, pay_org_code, pay_account_num, pay_account_num_masked, created_at, updated_at) VALUES
-('PAY20240001', 'INSU20240001', '01', '1M', '15', '20340101', 120000.00, '001', '1234567890123456', '123*********456', NOW(), NOW()),
-('PAY20240002', 'INSU20240002', '02', '6M', '25', '20340201', 200000.00, '002', '9876543210987654', '987*********654', NOW(), NOW());
 
 -- API Transaction Log sample data
 INSERT INTO api_transaction_log (api_tran_id, api_tran_dtm, rsp_code, rsp_message, bank_tran_id, bank_tran_date, bank_code_tran, bank_rsp_code, bank_rsp_message, user_seq_no, insu_id) VALUES
